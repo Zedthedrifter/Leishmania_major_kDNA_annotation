@@ -1,0 +1,109 @@
+# Directories
+project:              /mnt/sdb/zed/David_Sacks_L_major/minicircle_annotation
+in directory:         In_files
+working directory:    Work_files_Lm
+annotation directory: Annotation_Lm
+meme directory:       Work_files_Lm/Meme
+
+# Annotation sub-directories
+alignments directory: Alignments
+genbank directory:    Genbank
+species:              Leishmania major
+surfix:               Lm
+gRNAs text file:      gRNAs.txt
+
+# clean_mini_and_maxicircles.py: Check if minicircles are named and aligned correctly
+minicircle fasta infile: Lm_clustered.minicircles.fasta  #Lm_minicircles.fasta           
+maxicircle fasta infile: L.major.maxicircle.Requena.fasta #L.major.maxicircle.trimmed.Requena.fasta
+minicircle clean fasta file: clean_minicircles.fasta
+maxicircle clean fasta file: clean_maxicircle.fasta
+clean log text file: cleaned_minicircles.log
+remove minicircles without CSB1: yes
+CSB regexes:
+    CSB1: GGGGTTGG
+    CSB2: .[CAT][CT][CT]CGTTC #cannot start with '['??
+    CSB3: GGGGTTG[AG]TGT[AG]
+
+# mRNA_process.py: Process edited and unedited mRNA files
+unedited mRNA fasta infile:    Lm_unedited_mRNAs.fasta
+edited mRNA fasta infile:      Lm_edited_mRNAs.corrected.fasta   #Lm_edited_mRNAs.fasta
+unedited mRNA fasta file:      unedited_mRNA.fasta
+edited mRNA fasta file:        edited_mRNA.fasta
+edited mRNA with u fasta file: edited_mRNA_small_u.fasta
+edited mRNA with t fasta file: edited_mRNA_small_t.fasta
+deletions mRNA text file:      deletions_mRNA.txt
+
+# align_maxi: Align maxicircle to edited mRNAs
+maxicircle alignments file: maxi_alignments.txt
+minimum gRNA length: &ref1 24 
+
+# align_mini: Align minicircles to edited mRNAs
+minicircle alignments file: mini_alignments.txt
+
+# lm_hq_gRNAs.py: Extract High quality gRNAs, modified for Leishmania
+high quality gRNAs pickle file: hq_gRNAs.pickle
+high quality gRNAs text file:   hq_gRNAs.txt
+high quality gRNAs fasta file:  hq_gRNAs.fasta
+upstream: 65
+downstream: 100
+expected gRNA length: &ref2 25 #use a higher value (> 31) to find start and end positions, then drop (<25) while defining the start and end position
+high quality gRNAs filter:
+    anchor_seq:         (?=([|:]{6,}))   # watson-crick only for anchor 
+    #anchor_seq: (?=(\|{6}|\|{5}:\|{1,}|\|{4}:\|{2,}|\|{3}:\|{3,}|\|{2}:\|{4,}|\|{1}:\|{5,}|\|{5}::\|{1,}|\|{4}::\|{2,}|\|{3}::\|{3,}|\|{2}::\|{4,}|\|{1}::\|{5,})) # allow G-U as well
+    min_anchor_length:  0           # minimum anchor length of HQ gRNAs
+    min_gRNA_length:    *ref2       # minimum gRNA length of HQ gRNAs
+    max_mismatches:     5          # max no. of mismatches allowed in HQ gRNAs
+    start_position: 380             # variables for leishmania
+    end_position: 520               # variables for leishmania
+    min_gRNA_len_mini: 25            #variable for leish, different mini len for mini and maxi
+    min_gRNA_len_maxi: 31            #variable for leish
+
+
+# lm_filter_alignment.py
+filtered gRNAs text file: filtered_gRNAs.txt
+canonical_outfile: canonical_gRNAs.txt
+noncanonical_outfile: noncanonical_gRNAs.txt
+maxi_outfile : maxi_gRNAs.txt
+collapse filter:
+    start_position: 400             # variables for leishmania
+    end_position:   540               # variables for leishmania
+    pass_all: []
+    pass_gRNA: {'mO_031':['mO_031_ND3_266'],'mO_050':['mO_050_ND3_283'],'mO_025':['mO_025_ND3_308'],'mO_078':['mO_078_ND3_320'],
+                'mO_046':['mO_046_ND9_95'],
+                'mO_029':['mO_029_GR4_463'],'mO_036':['mO_036_GR4_422'],'mO_077':['mO_077_GR4_412','mO_077_RPS12_63'],
+                'mO_005':['mO_005_GR3_166'],
+                'mO_016':['mO_016_ND7_44']}  
+ 
+
+# lm_feature_id.py: designed for leishmania major
+features pickle file:       features.pickle.gz
+maxicircle_gRNAs_xlsx: maxicircle_gRNAs.xlsx #output for gRNAs on maxicircle, I think
+
+have transcriptomics: no
+
+# transcripts.py: Extract transcripts from sam file and assign to cassettes and orphans
+transcriptomics infile:  smallRNA_3-520_490_520_mapped_to_398_mOs_2020-01-15.sam.gz
+transcripts pickle file: transcripts.pickle.gz
+
+# find_transcript_p.py: Find probability a transcript starts in the initiation sequence under null model of no expression
+transcript position distribution pickle file: transcript_position_distribution.pickle
+transcript position fit range: [15, 70] # the range of positions to fit the normal distribution to transcript position
+initiation site range: [30, 32] # distance of initiation site from 3' end of forward repeat found from plot of transcripts.py
+
+# predict_transcript_end_pos.py
+
+# predict_expression.py: Determine expression status of cassettes and orphans
+expression pickle file:     expression.pickle
+expression text file:       expression.txt
+p: 0.0682 # set to false if this needs to be calculated
+end position percentile: 90
+
+# add_expression.py: Add expression data to all gRNAs and cassettes and identify genes
+features with expression pickle file: features_with_expression.pickle.gz
+expressed genes text file:            genes_with_expression.txt
+gRNAs with expression text file:      gRNAs_with_expression.txt
+cassettes with expression text file:  cassettes_with_expression.txt
+
+# annotate_minicircles.py: Final annotation
+genbank text file: annotated_Tbg1_mOs.gbk
+output genbank: yes
