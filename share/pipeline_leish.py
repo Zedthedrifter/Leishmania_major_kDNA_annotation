@@ -8,8 +8,8 @@ import argparse
 def prepare(config_file):
   lka.clean_mini_and_maxicircles(config_file)
   lka.lm_mRNA_process(config_file)
-  system(f'align_maxi {config_file}') #can't open that code file to check 
-  system(f'align_mini {config_file}')# can't open that code file to check
+  system(f'align_maxi {config_file}') 
+  system(f'align_mini {config_file}')
   
 
 def leish(config_file):

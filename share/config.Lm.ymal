@@ -44,8 +44,7 @@ minicircle alignments file: mini_alignments.txt
 high quality gRNAs pickle file: hq_gRNAs.pickle
 high quality gRNAs text file:   hq_gRNAs.txt
 high quality gRNAs fasta file:  hq_gRNAs.fasta
-upstream: 65
-downstream: 100
+
 expected gRNA length: &ref2 25 #use a higher value (> 31) to find start and end positions, then drop (<25) while defining the start and end position
 high quality gRNAs filter:
     anchor_seq:         (?=([|:]{6,}))   # watson-crick only for anchor 
@@ -77,7 +76,7 @@ collapse filter:
 
 # lm_feature_id.py: designed for leishmania major
 features pickle file:       features.pickle.gz
-maxicircle_gRNAs_xlsx: maxicircle_gRNAs.xlsx #output for gRNAs on maxicircle, I think
+maxicircle_gRNAs_xlsx: maxicircle_gRNAs.xlsx #output for gRNAs on maxicircle
 
 have transcriptomics: no
 
